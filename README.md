@@ -305,12 +305,6 @@ FEATURES: {
 
 ## 🚀 **Deployment**
 
-### **GitHub Pages Deployment**
-1. Push your code to a GitHub repository
-2. Go to repository Settings > Pages
-3. Select source branch (usually `main`)
-4. Your site will be available at `https://yourusername.github.io/cinehub`
-
 ### **Netlify Deployment**
 1. Connect your GitHub repository to Netlify
 2. Set build command: (none needed for static site)

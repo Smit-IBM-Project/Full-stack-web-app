@@ -1,0 +1,117 @@
+{
+  "name": "cinehub",
+  "version": "1.0.0",
+  "description": "A comprehensive movie review and rating platform for discovering, rating, and reviewing films",
+  "main": "index.html",
+  "scripts": {
+    "start": "live-server --port=3000 --open=/index.html",
+    "dev": "live-server --port=3000 --open=/index.html --watch=css,js,pages",
+    "build": "echo 'No build process needed for static site'",
+    "test": "echo 'Tests not implemented yet'",
+    "lint": "eslint js/**/*.js",
+    "format": "prettier --write \"**/*.{html,css,js,json,md}\"",
+    "serve": "python -m http.server 8000",
+    "validate-html": "html-validate *.html pages/*.html",
+    "optimize-images": "imagemin images/**/* --out-dir=images/optimized",
+    "check-links": "hyperlink index.html",
+    "preview": "live-server --port=3000 --no-browser --quiet"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/cinehub.git"
+  },
+  "keywords": [
+    "movies",
+    "reviews",
+    "ratings",
+    "cinema",
+    "films",
+    "entertainment",
+    "tmdb",
+    "responsive",
+    "javascript",
+    "html5",
+    "css3",
+    "web-app",
+    "movie-database",
+    "user-reviews",
+    "watchlist"
+  ],
+  "author": {
+    "name": "Your Name",
+    "email": "your.email@example.com",
+    "url": "https://your-website.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yourusername/cinehub/issues"
+  },
+  "homepage": "https://yourusername.github.io/cinehub/",
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "html-validate": "^7.0.0",
+    "hyperlink": "^5.0.0",
+    "imagemin": "^8.0.0",
+    "imagemin-cli": "^7.0.0",
+    "live-server": "^1.2.0",
+    "prettier": "^2.8.0"
+  },
+  "dependencies": {},
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "files": [
+    "index.html",
+    "css/",
+    "js/",
+    "pages/",
+    "images/",
+    "README.md",
+    "LICENSE"
+  ],
+  "config": {
+    "port": 3000,
+    "host": "localhost"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "es2021": true
+    },
+    "extends": [
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 12,
+      "sourceType": "module"
+    },
+    "rules": {
+      "no-unused-vars": "warn",
+      "no-console": "off",
+      "prefer-const": "error",
+      "no-var": "error"
+    },
+    "globals": {
+      "CONFIG": "readonly",
+      "API": "readonly",
+      "AUTH": "readonly",
+      "UI": "readonly"
+    }
+  },
+  "prettier": {
+    "semi": true,
+    "trailingComma": "es5",
+    "singleQuote": true,
+    "printWidth": 80,
+    "tabWidth": 2,
+    "useTabs": false
+  },
+  "gitHooks": {
+    "pre-commit": "npm run lint && npm run format"
+  }
+}

@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Watchlist - CineHub</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white">
+    <!-- Navigation -->
+    <nav class="bg-black bg-opacity-90 backdrop-blur-md fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="../index.html" class="text-2xl font-bold text-red-500">
+                        <i class="fas fa-film mr-2"></i>CineHub
+                    </a>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="../index.html" class="hover:text-red-400 transition-colors">Home</a>
+                    <a href="profile.html" class="hover:text-red-400 transition-colors">Profile</a>
+                    
+                    <!-- User Menu -->
+                    <div id="userMenu" class="relative">
+                        <button id="userMenuButton" class="flex items-center space-x-2 hover:text-red-400 transition-colors">
+                            <i class="fas fa-user-circle text-xl"></i>
+                            <span id="username">Guest</span>
+                        </button>
+                        <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg border border-gray-600">
+                            <a href="profile.html" class="block px-4 py-2 hover:bg-gray-700 rounded-t-lg">Profile</a>
+                            <a href="login.html" id="loginLink" class="block px-4 py-2 hover:bg-gray-700">Login</a>
+                            <a href="#" id="logoutLink" class="hidden block px-4 py-2 hover:bg-gray-700 rounded-b-lg text-red-400">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Watchlist Header -->
+    <section class="pt-20 pb-8 bg-gradient-to-r from-red-600 to-red-800">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center">
+                <i class="fas fa-list text-6xl mb-4"></i>
+                <h1 class="text-4xl font-bold mb-4">My Watchlist</h1>
+                <p class="text-xl text-gray-200">Movies you want to watch</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Watchlist Controls -->
+    <section class="py-6 bg-black">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <!-- Filters and Sort -->
+                <div class="flex flex-wrap gap-4 items-center">
+                    <div class="flex items-center gap-2">
+                        <label class="text-sm font-medium">Filter:</label>
+                        <select id="watchlistFilter" class="bg-gray-800 border border-gray-600 rounded px-3 py-2 text-sm">
+                            <option value="all">All Movies</option>
+                            <option value="unwatched">Not Watched</option>
+                            <option value="watched">Watched</option>
+                            <option value="high">High Priority</option>
+                            <option value="medium">Medium Priority</option>
+                            <option value="low">Low Priority</option>
+                        </select>
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                        <label class="text-sm font-medium">Sort by:</label>
+                        <select id="watchlistSort" class="bg-gray-800 border border-gray-600 rounded px-3 py-2 text-sm">
+                            <option value="added">Date Added</option>
+                            <option value="title">Movie Title</option>
+                            <option value="release_date">Release Date</option>
+                            <option value="rating">Rating</option>
+                            <option value="priority">Priority</option>
+                        </select>
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                        <label class="text-sm font-medium">View:</label>
+                        <div class="flex bg-gray-800 rounded border border-gray-600">
+                            <button id="gridView" class="px-3 py-2 text-sm bg-red-600 rounded-l">
+                                <i class="fas fa-th"></i>
+                            </button>
+                            <button id="listView" class="px-3 py-2 text-sm hover:bg-gray-700 rounded-r">
+                                <i class="fas fa-list"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stats and Actions -->
+                <div class="flex items-center gap-4">
+                    <div class="text-sm text-gray-400">
+                        <span id="watchlistStats">0 movies</span>
+                    </div>
+                    
+                    <div class="flex gap-2">
+                        <button id="markAllWatched" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-check-double mr-2"></i>Mark All Watched
+                        </button>
+                        <button id="clearWatchlist" class="btn btn-secondary btn-sm text-red-400">
+                            <i class="fas fa-trash mr-2"></i>Clear All
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Watchlist Content -->
+    <section class="py-8 min-h-screen">
+        <div class="max-w-7xl mx-auto px-4">
+            <!-- Quick Actions -->
+            <div class="mb-6 flex flex-wrap gap-2">
+                <button class="priority-filter active" data-priority="all">All</button>
+                <button class="priority-filter" data-priority="high">High Priority</button>
+                <button class="priority-filter" data-priority="medium">Medium Priority</button>
+                <button class="priority-filter" data-priority="low">Low Priority</button>
+                <button class="priority-filter" data-priority="unwatched">Not Watched</button>
+                <button class="priority-filter" data-priority="watched">Watched</button>
+            </div>
+            
+            <!-- Empty State -->
+            <div id="emptyWatchlist" class="text-center py-20 hidden">
+                <i class="fas fa-list text-6xl text-gray-500 mb-6"></i>
+                <h2 class="text-2xl font-bold mb-4">Your watchlist is empty</h2>
+                <p class="text-gray-400 mb-6 max-w-md mx-auto">
+                    Start building your watchlist by browsing movies and clicking the "Add to Watchlist" button.
+                </p>
+                <a href="../index.html" class="btn btn-primary">
+                    <i class="fas fa-search mr-2"></i>Discover Movies
+                </a>
+            </div>
+            
+            <!-- Grid View -->
+            <div id="watchlistGrid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                <!-- Movies will be loaded here -->
+            </div>
+            
+            <!-- List View -->
+            <div id="watchlistList" class="hidden space-y-4">
+                <!-- Movies will be loaded here -->
+            </div>
+            
+            <!-- Load More -->
+            <div class="text-center mt-8">
+                <button id="loadMoreWatchlist" class="btn btn-secondary hidden">
+                    Load More Movies
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Movie Options Modal -->
+    <div id="movieOptionsModal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-gray-800 rounded-lg w-full max-w-md">
+                <div class="p-6 border-b border-gray-600 flex justify-between items-center">
+                    <h3 class="text-xl font-semibold" id="movieOptionsTitle">Movie Options</h3>
+                    <button id="closeOptionsModal" class="text-gray-400 hover:text-white text-xl">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <!-- Priority Setting -->
+                        <div>
+                            <label class="form-label">Priority</label>
+                            <select id="moviePriority" class="form-input">
+                                <option value="high">High Priority</option>
+                                <option value="medium">Medium Priority</option>
+                                <option value="low">Low Priority</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Notes -->
+                        <div>
+                            <label class="form-label">Notes</label>
+                            <textarea id="movieNotes" class="form-input h-20" placeholder="Add your thoughts or reminders..."></textarea>
+                        </div>
+                        
+                        <!-- Status -->
+                        <div>
+                            <label class="flex items-center">
+                                <input id="movieWatched" type="checkbox" class="mr-3">
+                                <span>I've watched this movie</span>
+                            </label>
+                        </div>
+                        
+                        <!-- Actions -->
+                        <div class="flex gap-2 pt-4">
+                            <button id="saveMovieOptions" class="btn btn-primary flex-1">
+                                <i class="fas fa-save mr-2"></i>Save Changes
+                            </button>
+                            <button id="removeFromWatchlist" class="btn btn-secondary text-red-400">
+                                <i class="fas fa-trash mr-2"></i>Remove
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Actions Modal -->
+    <div id="bulkActionsModal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-gray-800 rounded-lg w-full max-w-md">
+                <div class="p-6 border-b border-gray-600">
+                    <h3 class="text-xl font-semibold">Bulk Actions</h3>
+                    <p class="text-gray-400 text-sm">Select action for <span id="selectedCount">0</span> movies</p>
+                </div>
+                
+                <div class="p-6">
+                    <div class="space-y-3">
+                        <button id="bulkMarkWatched" class="btn btn-secondary w-full justify-start">
+                            <i class="fas fa-check mr-3"></i>Mark as Watched
+                        </button>
+                        <button id="bulkMarkUnwatched" class="btn btn-secondary w-full justify-start">
+                            <i class="fas fa-times mr-3"></i>Mark as Not Watched
+                        </button>
+                        <button id="bulkSetPriorityHigh" class="btn btn-secondary w-full justify-start">
+                            <i class="fas fa-arrow-up mr-3"></i>Set High Priority
+                        </button>
+                        <button id="bulkSetPriorityMedium" class="btn btn-secondary w-full justify-start">
+                            <i class="fas fa-minus mr-3"></i>Set Medium Priority
+                        </button>
+                        <button id="bulkSetPriorityLow" class="btn btn-secondary w-full justify-start">
+                            <i class="fas fa-arrow-down mr-3"></i>Set Low Priority
+                        </button>
+                        <button id="bulkRemove" class="btn btn-secondary w-full justify-start text-red-400">
+                            <i class="fas fa-trash mr-3"></i>Remove from Watchlist
+                        </button>
+                    </div>
+                    
+                    <div class="flex gap-2 mt-6">
+                        <button id="cancelBulkActions" class="btn btn-secondary flex-1">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-gray-800 p-6 rounded-lg">
+            <i class="fas fa-spinner fa-spin text-3xl text-red-500"></i>
+            <p class="mt-2">Loading your watchlist...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/ui.js"></script>
+    
+    <script>
+        let userWatchlist = [];
+        let filteredWatchlist = [];
+        let currentFilter = 'all';
+        let currentSort = 'added';
+        let currentView = 'grid';
+        let selectedMovies = new Set();
+        let currentMovie = null;
+        let watchlistPage = 1;
+        
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check if user is logged in
+            if (!AUTH.requireAuth()) {
+                return;
+            }
+            
+            try {
+                await loadWatchlist();
+                setupEventListeners();
+            } catch (error) {
+                console.error('Error loading watchlist:', error);
+                showError('Failed to load watchlist');
+            } finally {
+                document.getElementById('loadingSpinner').classList.add('hidden');
+            }
+        });
+        
+        async function loadWatchlist(page = 1) {
+            try {
+                const user = AUTH.getCurrentUser();
+                const response = await API.getUserWatchlist(user.id, page);
+                
+                if (page === 1) {
+                    userWatchlist = response.data || [];
+                } else {
+                    userWatchlist.push(...(response.data || []));
+                }
+                
+                // For each watchlist item, we might need to fetch movie details from TMDB
+                for (let item of userWatchlist) {
+                    if (!item.movie_title && item.movie_id) {
+                        try {
+                            const movieDetails = await API.getMovieDetails(item.movie_id);
+                            item.movie_title = movieDetails.title;
+                            item.movie_poster = movieDetails.poster_path;
+                            item.movie_release_date = movieDetails.release_date;
+                            item.movie_rating = movieDetails.vote_average;
+                            item.movie_overview = movieDetails.overview;
+                        } catch (error) {
+                            console.error('Error fetching movie details:', error);
+                            item.movie_title = 'Unknown Movie';
+                        }
+                    }
+                }
+                
+                applyFilters();
+                updateStats();
+                
+                // Show load more button if there are more items
+                const loadMoreBtn = document.getElementById('loadMoreWatchlist');
+                if (response.data && response.data.length === CONFIG.MOVIES_PER_PAGE) {
+                    loadMoreBtn.classList.remove('hidden');
+                } else {
+                    loadMoreBtn.classList.add('hidden');
+                }
+                
+            } catch (error) {
+                console.error('Error loading watchlist:', error);
+                throw error;
+            }
+        }
+        
+        function applyFilters() {
+            filteredWatchlist = userWatchlist.filter(movie => {
+                switch (currentFilter) {
+                    case 'unwatched':
+                        return !movie.watched;
+                    case 'watched':
+                        return movie.watched;
+                    case 'high':
+                    case 'medium':
+                    case 'low':
+                        return movie.priority === currentFilter;
+                    default:
+                        return true;
+                }
+            });
+            
+            // Apply sorting
+            filteredWatchlist.sort((a, b) => {
+                switch (currentSort) {
+                    case 'title':
+                        return (a.movie_title || '').localeCompare(b.movie_title || '');
+                    case 'release_date':
+                        return new Date(b.movie_release_date || 0) - new Date(a.movie_release_date || 0);
+                    case 'rating':
+                        return (b.movie_rating || 0) - (a.movie_rating || 0);
+                    case 'priority':
+                        const priorityOrder = { high: 3, medium: 2, low: 1 };
+                        return (priorityOrder[b.priority] || 0) - (priorityOrder[a.priority] || 0);
+                    default: // 'added'
+                        return new Date(b.added_at) - new Date(a.added_at);
+                }
+            });
+            
+            displayWatchlist();
+        }
+        
+        function displayWatchlist() {
+            const gridContainer = document.getElementById('watchlistGrid');
+            const listContainer = document.getElementById('watchlistList');
+            const emptyState = document.getElementById('emptyWatchlist');
+            
+            if (filteredWatchlist.length === 0) {
+                emptyState.classList.remove('hidden');
+                gridContainer.classList.add('hidden');
+                listContainer.classList.add('hidden');
+                return;
+            }
+            
+            emptyState.classList.add('hidden');
+            
+            if (currentView === 'grid') {
+                gridContainer.classList.remove('hidden');
+                listContainer.classList.add('hidden');
+                displayGridView();
+            } else {
+                gridContainer.classList.add('hidden');
+                listContainer.classList.remove('hidden');
+                displayListView();
+            }
+        }
+        
+        function displayGridView() {
+            const container = document.getElementById('watchlistGrid');
+            
+            container.innerHTML = filteredWatchlist.map(movie => `
+                <div class="movie-card relative group" data-movie-id="${movie.id}">
+                    <div class="absolute top-2 left-2 z-10">
+                        <input type="checkbox" class="movie-checkbox" value="${movie.id}" 
+                               onchange="toggleMovieSelection('${movie.id}')">
+                    </div>
+                    
+                    <div class="absolute top-2 right-2 z-10">
+                        <button class="bg-black bg-opacity-70 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                onclick="openMovieOptions('${movie.id}')">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </div>
+                    
+                    ${movie.watched ? '<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-green-600 text-white p-3 rounded-full"><i class="fas fa-check text-2xl"></i></div>' : ''}
+                    
+                    <img class="movie-poster cursor-pointer" 
+                         src="${CONFIG.getTmdbImageUrl(movie.movie_poster)}" 
+                         alt="${movie.movie_title}"
+                         onclick="window.location.href='movie-details.html?id=${movie.movie_id}'">
+                    
+                    <div class="movie-info">
+                        <div class="movie-title" title="${movie.movie_title}">${movie.movie_title}</div>
+                        
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="priority-badge priority-${movie.priority}">${movie.priority}</span>
+                            <span class="text-gray-400">${movie.movie_release_date ? new Date(movie.movie_release_date).getFullYear() : ''}</span>
+                        </div>
+                        
+                        ${movie.notes ? `<div class="text-xs text-gray-500 mt-1" title="${movie.notes}"><i class="fas fa-sticky-note mr-1"></i>Note</div>` : ''}
+                        
+                        <div class="flex items-center justify-between mt-2">
+                            <div class="text-xs text-gray-400">
+                                Added ${new Date(movie.added_at).toLocaleDateString()}
+                            </div>
+                            ${movie.watched ? 
+                                '<span class="text-green-400 text-xs"><i class="fas fa-check mr-1"></i>Watched</span>' : 
+                                `<button class="btn btn-primary btn-xs" onclick="markAsWatched('${movie.id}')">
+                                    <i class="fas fa-eye"></i>
+                                </button>`
+                            }
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function displayListView() {
+            const container = document.getElementById('watchlistList');
+            
+            container.innerHTML = filteredWatchlist.map(movie => `
+                <div class="bg-gray-800 rounded-lg p-4 flex items-center gap-4" data-movie-id="${movie.id}">
+                    <input type="checkbox" class="movie-checkbox" value="${movie.id}" 
+                           onchange="toggleMovieSelection('${movie.id}')">
+                    
+                    <img class="w-16 h-24 object-cover rounded cursor-pointer" 
+                         src="${CONFIG.getTmdbImageUrl(movie.movie_poster)}" 
+                         alt="${movie.movie_title}"
+                         onclick="window.location.href='movie-details.html?id=${movie.movie_id}'">
+                    
+                    <div class="flex-1">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <h3 class="font-semibold text-lg cursor-pointer hover:text-red-400"
+                                    onclick="window.location.href='movie-details.html?id=${movie.movie_id}'">${movie.movie_title}</h3>
+                                <p class="text-gray-400 text-sm">${movie.movie_release_date ? new Date(movie.movie_release_date).getFullYear() : ''}</p>
+                                ${movie.notes ? `<p class="text-gray-500 text-sm mt-1">${movie.notes}</p>` : ''}
+                            </div>
+                            
+                            <div class="flex items-center gap-3">
+                                <span class="priority-badge priority-${movie.priority}">${movie.priority}</span>
+                                
+                                ${movie.watched ? 
+                                    '<span class="text-green-400"><i class="fas fa-check mr-1"></i>Watched</span>' :
+                                    `<button class="btn btn-primary btn-sm" onclick="markAsWatched('${movie.id}')">
+                                        <i class="fas fa-eye mr-1"></i>Mark Watched
+                                    </button>`
+                                }
+                                
+                                <button class="btn btn-secondary btn-sm" onclick="openMovieOptions('${movie.id}')">
+                                    <i class="fas fa-cog"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between mt-2 text-xs text-gray-500">
+                            <span>Added ${new Date(movie.added_at).toLocaleDateString()}</span>
+                            ${movie.movie_rating ? `<span><i class="fas fa-star text-yellow-500 mr-1"></i>${movie.movie_rating.toFixed(1)}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function updateStats() {
+            const total = filteredWatchlist.length;
+            const watched = filteredWatchlist.filter(m => m.watched).length;
+            const unwatched = total - watched;
+            
+            document.getElementById('watchlistStats').textContent = 
+                `${total} movies (${watched} watched, ${unwatched} to watch)`;
+        }
+        
+        function setupEventListeners() {
+            // Filter and sort controls
+            document.getElementById('watchlistFilter').addEventListener('change', (e) => {
+                currentFilter = e.target.value;
+                applyFilters();
+            });
+            
+            document.getElementById('watchlistSort').addEventListener('change', (e) => {
+                currentSort = e.target.value;
+                applyFilters();
+            });
+            
+            // View toggle
+            document.getElementById('gridView').addEventListener('click', () => {
+                currentView = 'grid';
+                updateViewButtons();
+                displayWatchlist();
+            });
+            
+            document.getElementById('listView').addEventListener('click', () => {
+                currentView = 'list';
+                updateViewButtons();
+                displayWatchlist();
+            });
+            
+            // Priority filter buttons
+            document.querySelectorAll('.priority-filter').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    currentFilter = e.target.dataset.priority;
+                    document.getElementById('watchlistFilter').value = currentFilter;
+                    
+                    // Update active state
+                    document.querySelectorAll('.priority-filter').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    
+                    applyFilters();
+                });
+            });
+            
+            // Bulk actions
+            document.getElementById('markAllWatched').addEventListener('click', markAllWatched);
+            document.getElementById('clearWatchlist').addEventListener('click', clearWatchlist);
+            
+            // Modal controls
+            document.getElementById('closeOptionsModal').addEventListener('click', closeMovieOptions);
+            document.getElementById('saveMovieOptions').addEventListener('click', saveMovieOptions);
+            document.getElementById('removeFromWatchlist').addEventListener('click', removeFromWatchlist);
+            
+            // Load more
+            document.getElementById('loadMoreWatchlist').addEventListener('click', () => {
+                watchlistPage++;
+                loadWatchlist(watchlistPage);
+            });
+        }
+        
+        function updateViewButtons() {
+            const gridBtn = document.getElementById('gridView');
+            const listBtn = document.getElementById('listView');
+            
+            if (currentView === 'grid') {
+                gridBtn.classList.add('bg-red-600');
+                listBtn.classList.remove('bg-red-600');
+            } else {
+                listBtn.classList.add('bg-red-600');
+                gridBtn.classList.remove('bg-red-600');
+            }
+        }
+        
+        function toggleMovieSelection(movieId) {
+            if (selectedMovies.has(movieId)) {
+                selectedMovies.delete(movieId);
+            } else {
+                selectedMovies.add(movieId);
+            }
+            
+            // Show/hide bulk actions based on selection
+            if (selectedMovies.size > 0) {
+                // Could show bulk actions toolbar here
+            }
+        }
+        
+        function openMovieOptions(movieId) {
+            const movie = userWatchlist.find(m => m.id === movieId);
+            if (!movie) return;
+            
+            currentMovie = movie;
+            
+            // Populate form
+            document.getElementById('movieOptionsTitle').textContent = movie.movie_title;
+            document.getElementById('moviePriority').value = movie.priority || 'medium';
+            document.getElementById('movieNotes').value = movie.notes || '';
+            document.getElementById('movieWatched').checked = movie.watched || false;
+            
+            document.getElementById('movieOptionsModal').classList.remove('hidden');
+        }
+        
+        function closeMovieOptions() {
+            document.getElementById('movieOptionsModal').classList.add('hidden');
+            currentMovie = null;
+        }
+        
+        async function saveMovieOptions() {
+            if (!currentMovie) return;
+            
+            try {
+                const updatedMovie = {
+                    ...currentMovie,
+                    priority: document.getElementById('moviePriority').value,
+                    notes: document.getElementById('movieNotes').value,
+                    watched: document.getElementById('movieWatched').checked,
+                    watched_at: document.getElementById('movieWatched').checked ? new Date().toISOString() : null
+                };
+                
+                await API.request(`${CONFIG.API_ENDPOINTS.WATCHLIST}/${currentMovie.id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify(updatedMovie)
+                });
+                
+                // Update local data
+                const index = userWatchlist.findIndex(m => m.id === currentMovie.id);
+                if (index !== -1) {
+                    userWatchlist[index] = updatedMovie;
+                }
+                
+                closeMovieOptions();
+                applyFilters();
+                showSuccess('Movie updated successfully!');
+                
+            } catch (error) {
+                console.error('Error saving movie options:', error);
+                showError('Failed to update movie');
+            }
+        }
+        
+        async function removeFromWatchlist() {
+            if (!currentMovie) return;
+            
+            if (!confirm('Are you sure you want to remove this movie from your watchlist?')) {
+                return;
+            }
+            
+            try {
+                const user = AUTH.getCurrentUser();
+                await API.removeFromWatchlist(user.id, currentMovie.movie_id);
+                
+                // Remove from local data
+                userWatchlist = userWatchlist.filter(m => m.id !== currentMovie.id);
+                
+                closeMovieOptions();
+                applyFilters();
+                showSuccess('Movie removed from watchlist');
+                
+            } catch (error) {
+                console.error('Error removing movie:', error);
+                showError('Failed to remove movie');
+            }
+        }
+        
+        async function markAsWatched(movieId) {
+            try {
+                const movie = userWatchlist.find(m => m.id === movieId);
+                if (!movie) return;
+                
+                const user = AUTH.getCurrentUser();
+                await API.markAsWatched(user.id, movie.movie_id);
+                
+                // Update local data
+                movie.watched = true;
+                movie.watched_at = new Date().toISOString();
+                
+                applyFilters();
+                showSuccess('Marked as watched!');
+                
+            } catch (error) {
+                console.error('Error marking as watched:', error);
+                showError('Failed to update movie');
+            }
+        }
+        
+        async function markAllWatched() {
+            if (!confirm('Mark all movies in your watchlist as watched?')) {
+                return;
+            }
+            
+            try {
+                const user = AUTH.getCurrentUser();
+                const unwatchedMovies = userWatchlist.filter(m => !m.watched);
+                
+                for (let movie of unwatchedMovies) {
+                    await API.markAsWatched(user.id, movie.movie_id);
+                    movie.watched = true;
+                    movie.watched_at = new Date().toISOString();
+                }
+                
+                applyFilters();
+                showSuccess(`Marked ${unwatchedMovies.length} movies as watched!`);
+                
+            } catch (error) {
+                console.error('Error marking all as watched:', error);
+                showError('Failed to update movies');
+            }
+        }
+        
+        async function clearWatchlist() {
+            if (!confirm('Are you sure you want to clear your entire watchlist? This cannot be undone.')) {
+                return;
+            }
+            
+            try {
+                const user = AUTH.getCurrentUser();
+                
+                for (let movie of userWatchlist) {
+                    await API.removeFromWatchlist(user.id, movie.movie_id);
+                }
+                
+                userWatchlist = [];
+                applyFilters();
+                showSuccess('Watchlist cleared successfully!');
+                
+            } catch (error) {
+                console.error('Error clearing watchlist:', error);
+                showError('Failed to clear watchlist');
+            }
+        }
+        
+        function showSuccess(message) {
+            if (window.UI && window.UI.showAlert) {
+                window.UI.showAlert(message, 'success');
+            } else {
+                alert(message);
+            }
+        }
+        
+        function showError(message) {
+            if (window.UI && window.UI.showAlert) {
+                window.UI.showAlert(message, 'error');
+            } else {
+                alert(message);
+            }
+        }
+    </script>
+
+    <style>
+        .priority-filter {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background: transparent;
+            border: 1px solid #374151;
+            color: #9ca3af;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.875rem;
+        }
+        
+        .priority-filter:hover {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+        
+        .priority-filter.active {
+            background: #ef4444;
+            border-color: #ef4444;
+            color: white;
+        }
+        
+        .priority-badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .priority-high {
+            background: #dc2626;
+            color: white;
+        }
+        
+        .priority-medium {
+            background: #f59e0b;
+            color: white;
+        }
+        
+        .priority-low {
+            background: #059669;
+            color: white;
+        }
+        
+        .btn-xs {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+        
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+        }
+        
+        .movie-checkbox {
+            transform: scale(1.2);
+        }
+    </style>
+</body>
+</html>

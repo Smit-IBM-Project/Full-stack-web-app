@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - CineHub</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white">
+    <!-- Navigation -->
+    <nav class="bg-black bg-opacity-90 backdrop-blur-md fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="../index.html" class="text-2xl font-bold text-red-500">
+                        <i class="fas fa-film mr-2"></i>CineHub
+                    </a>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="../index.html" class="hover:text-red-400 transition-colors">Home</a>
+                    <a href="watchlist.html" class="hover:text-red-400 transition-colors">My List</a>
+                    
+                    <!-- User Menu -->
+                    <div id="userMenu" class="relative">
+                        <button id="userMenuButton" class="flex items-center space-x-2 text-red-400">
+                            <i class="fas fa-user-circle text-xl"></i>
+                            <span id="username">Profile</span>
+                        </button>
+                        <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg border border-gray-600">
+                            <a href="#" id="logoutLink" class="block px-4 py-2 hover:bg-gray-700 rounded-lg text-red-400">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Profile Header -->
+    <section class="profile-header pt-16">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <div id="profileAvatar" class="profile-avatar">
+                <!-- Avatar will be set dynamically -->
+            </div>
+            <h1 id="profileName" class="text-3xl font-bold mb-2"></h1>
+            <p id="profileUsername" class="text-xl text-gray-200 mb-4"></p>
+            <p id="profileBio" class="text-lg text-gray-300 mb-6 max-w-2xl mx-auto"></p>
+            
+            <!-- Profile Stats -->
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <span id="reviewCount" class="stat-number">0</span>
+                    <span class="stat-label">Reviews</span>
+                </div>
+                <div class="stat-item">
+                    <span id="ratingCount" class="stat-number">0</span>
+                    <span class="stat-label">Ratings</span>
+                </div>
+                <div class="stat-item">
+                    <span id="watchlistCount" class="stat-number">0</span>
+                    <span class="stat-label">Watchlist</span>
+                </div>
+                <div class="stat-item">
+                    <span id="joinDate" class="stat-number">2024</span>
+                    <span class="stat-label">Member Since</span>
+                </div>
+            </div>
+            
+            <button id="editProfileBtn" class="btn btn-secondary mt-6">
+                <i class="fas fa-edit mr-2"></i>Edit Profile
+            </button>
+        </div>
+    </section>
+
+    <!-- Profile Content -->
+    <section class="py-12 bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4">
+            <!-- Profile Navigation Tabs -->
+            <div class="flex flex-wrap justify-center mb-8 border-b border-gray-700">
+                <button class="profile-tab active" data-tab="reviews">
+                    <i class="fas fa-star mr-2"></i>My Reviews
+                </button>
+                <button class="profile-tab" data-tab="ratings">
+                    <i class="fas fa-chart-line mr-2"></i>My Ratings
+                </button>
+                <button class="profile-tab" data-tab="watchlist">
+                    <i class="fas fa-list mr-2"></i>Watchlist
+                </button>
+                <button class="profile-tab" data-tab="settings">
+                    <i class="fas fa-cog mr-2"></i>Settings
+                </button>
+            </div>
+
+            <!-- Tab Contents -->
+            
+            <!-- Reviews Tab -->
+            <div id="reviewsTab" class="tab-content active">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">My Reviews</h2>
+                    <div class="flex gap-2">
+                        <select id="reviewSort" class="bg-gray-800 border border-gray-600 rounded px-3 py-2">
+                            <option value="date">Sort by Date</option>
+                            <option value="rating">Sort by Rating</option>
+                            <option value="title">Sort by Movie Title</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="userReviewsList" class="space-y-6">
+                    <!-- Reviews will be loaded here -->
+                </div>
+                
+                <div class="text-center mt-8">
+                    <button id="loadMoreUserReviews" class="btn btn-secondary hidden">
+                        Load More Reviews
+                    </button>
+                </div>
+            </div>
+
+            <!-- Ratings Tab -->
+            <div id="ratingsTab" class="tab-content hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">My Ratings</h2>
+                    <div class="flex gap-2">
+                        <select id="ratingFilter" class="bg-gray-800 border border-gray-600 rounded px-3 py-2">
+                            <option value="all">All Ratings</option>
+                            <option value="10">10 Stars</option>
+                            <option value="9">9+ Stars</option>
+                            <option value="8">8+ Stars</option>
+                            <option value="7">7+ Stars</option>
+                            <option value="6">6+ Stars</option>
+                            <option value="5">5+ Stars</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Rating Statistics -->
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+                    <div class="bg-gray-800 p-4 rounded-lg text-center">
+                        <div id="avgRating" class="text-2xl font-bold text-yellow-500">0.0</div>
+                        <div class="text-gray-400">Average Rating</div>
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded-lg text-center">
+                        <div id="highestRated" class="text-2xl font-bold text-green-500">0</div>
+                        <div class="text-gray-400">Highest Rated</div>
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded-lg text-center">
+                        <div id="lowestRated" class="text-2xl font-bold text-red-500">0</div>
+                        <div class="text-gray-400">Lowest Rated</div>
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded-lg text-center">
+                        <div id="totalRatings" class="text-2xl font-bold text-blue-500">0</div>
+                        <div class="text-gray-400">Total Rated</div>
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded-lg text-center">
+                        <div id="favoriteGenre" class="text-2xl font-bold text-purple-500">-</div>
+                        <div class="text-gray-400">Favorite Genre</div>
+                    </div>
+                </div>
+                
+                <div id="userRatingsList" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                    <!-- Ratings will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Watchlist Tab -->
+            <div id="watchlistTab" class="tab-content hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">My Watchlist</h2>
+                    <div class="flex gap-2">
+                        <select id="watchlistFilter" class="bg-gray-800 border border-gray-600 rounded px-3 py-2">
+                            <option value="all">All Movies</option>
+                            <option value="unwatched">Not Watched</option>
+                            <option value="watched">Watched</option>
+                            <option value="high">High Priority</option>
+                            <option value="medium">Medium Priority</option>
+                            <option value="low">Low Priority</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="userWatchlist" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                    <!-- Watchlist will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settingsTab" class="tab-content hidden">
+                <div class="max-w-2xl mx-auto">
+                    <h2 class="text-2xl font-bold mb-6">Account Settings</h2>
+                    
+                    <!-- Profile Information -->
+                    <form id="profileForm" class="bg-gray-800 p-6 rounded-xl mb-6">
+                        <h3 class="text-xl font-semibold mb-4">Profile Information</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label for="editFirstName" class="form-label">First Name</label>
+                                <input id="editFirstName" type="text" class="form-input">
+                            </div>
+                            <div>
+                                <label for="editLastName" class="form-label">Last Name</label>
+                                <input id="editLastName" type="text" class="form-input">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="editEmail" class="form-label">Email Address</label>
+                            <input id="editEmail" type="email" class="form-input" readonly>
+                            <p class="text-xs text-gray-500 mt-1">Email cannot be changed</p>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="editBio" class="form-label">Bio</label>
+                            <textarea id="editBio" class="form-input h-24" placeholder="Tell us about yourself..."></textarea>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label class="form-label">Favorite Genres</label>
+                            <div id="genreSelection" class="flex flex-wrap gap-2">
+                                <!-- Genres will be loaded here -->
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save mr-2"></i>Save Changes
+                        </button>
+                    </form>
+                    
+                    <!-- Change Password -->
+                    <form id="passwordForm" class="bg-gray-800 p-6 rounded-xl mb-6">
+                        <h3 class="text-xl font-semibold mb-4">Change Password</h3>
+                        
+                        <div class="mb-4">
+                            <label for="currentPassword" class="form-label">Current Password</label>
+                            <input id="currentPassword" type="password" class="form-input">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="newPassword" class="form-label">New Password</label>
+                            <input id="newPassword" type="password" class="form-input">
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="confirmNewPassword" class="form-label">Confirm New Password</label>
+                            <input id="confirmNewPassword" type="password" class="form-input">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-key mr-2"></i>Change Password
+                        </button>
+                    </form>
+                    
+                    <!-- Privacy Settings -->
+                    <div class="bg-gray-800 p-6 rounded-xl">
+                        <h3 class="text-xl font-semibold mb-4">Privacy Settings</h3>
+                        
+                        <div class="space-y-4">
+                            <label class="flex items-center">
+                                <input id="publicProfile" type="checkbox" class="mr-3">
+                                <span>Make my profile public</span>
+                            </label>
+                            
+                            <label class="flex items-center">
+                                <input id="showRatings" type="checkbox" class="mr-3">
+                                <span>Show my ratings to other users</span>
+                            </label>
+                            
+                            <label class="flex items-center">
+                                <input id="emailNotifications" type="checkbox" class="mr-3">
+                                <span>Receive email notifications</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-gray-800 rounded-lg w-full max-w-md">
+                <div class="p-6 border-b border-gray-600 flex justify-between items-center">
+                    <h3 class="text-xl font-semibold">Quick Profile Edit</h3>
+                    <button id="closeEditModal" class="text-gray-400 hover:text-white text-xl">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="p-6">
+                    <form id="quickProfileForm">
+                        <div class="mb-4">
+                            <label for="quickFirstName" class="form-label">First Name</label>
+                            <input id="quickFirstName" type="text" class="form-input">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="quickLastName" class="form-label">Last Name</label>
+                            <input id="quickLastName" type="text" class="form-input">
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label for="quickBio" class="form-label">Bio</label>
+                            <textarea id="quickBio" class="form-input h-20"></textarea>
+                        </div>
+                        
+                        <div class="flex gap-4">
+                            <button type="submit" class="btn btn-primary flex-1">Save</button>
+                            <button type="button" id="cancelQuickEdit" class="btn btn-secondary">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-gray-800 p-6 rounded-lg">
+            <i class="fas fa-spinner fa-spin text-3xl text-red-500"></i>
+            <p class="mt-2">Loading profile...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/ui.js"></script>
+    
+    <script>
+        let currentUser = null;
+        let userReviews = [];
+        let userRatings = [];
+        let userWatchlist = [];
+        
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check if user is logged in
+            if (!AUTH.requireAuth()) {
+                return;
+            }
+            
+            currentUser = AUTH.getCurrentUser();
+            
+            try {
+                await loadProfileData();
+                setupEventListeners();
+                setupTabs();
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                showError('Failed to load profile data');
+            } finally {
+                document.getElementById('loadingSpinner').classList.add('hidden');
+            }
+        });
+        
+        async function loadProfileData() {
+            try {
+                // Load user data from database
+                const userData = await API.getUserById(currentUser.id);
+                
+                // Update profile display
+                updateProfileDisplay(userData);
+                
+                // Load user activity
+                await Promise.all([
+                    loadUserReviews(),
+                    loadUserRatings(),
+                    loadUserWatchlist()
+                ]);
+                
+                // Update stats
+                updateProfileStats();
+                
+            } catch (error) {
+                console.error('Error loading profile data:', error);
+                throw error;
+            }
+        }
+        
+        function updateProfileDisplay(user) {
+            // Profile header
+            const avatar = document.getElementById('profileAvatar');
+            avatar.textContent = (user.first_name?.charAt(0) || user.username?.charAt(0) || 'U').toUpperCase();
+            
+            const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ');
+            document.getElementById('profileName').textContent = fullName || user.username;
+            document.getElementById('profileUsername').textContent = '@' + user.username;
+            document.getElementById('profileBio').textContent = user.bio || 'Movie enthusiast on CineHub';
+            
+            const joinYear = new Date(user.join_date).getFullYear();
+            document.getElementById('joinDate').textContent = joinYear;
+            
+            // Update form fields in settings
+            document.getElementById('editFirstName').value = user.first_name || '';
+            document.getElementById('editLastName').value = user.last_name || '';
+            document.getElementById('editEmail').value = user.email;
+            document.getElementById('editBio').value = user.bio || '';
+        }
+        
+        async function loadUserReviews() {
+            try {
+                const response = await API.getUserReviews(currentUser.id);
+                userReviews = response.data || [];
+                displayUserReviews();
+            } catch (error) {
+                console.error('Error loading user reviews:', error);
+            }
+        }
+        
+        function displayUserReviews() {
+            const container = document.getElementById('userReviewsList');
+            
+            if (userReviews.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 col-span-full">
+                        <i class="fas fa-star text-4xl text-gray-500 mb-4"></i>
+                        <p class="text-gray-400">You haven't written any reviews yet.</p>
+                        <p class="text-gray-500 mt-2">Start watching movies and share your thoughts!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = userReviews.map(review => `
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="flex items-center">
+                            <h3 class="font-semibold text-lg">${review.movie_title || 'Unknown Movie'}</h3>
+                            <div class="ml-auto flex items-center">
+                                <div class="rating-container">
+                                    ${'<i class="fas fa-star text-yellow-500"></i>'.repeat(Math.floor(review.rating))}
+                                    <span class="ml-1">${review.rating}/10</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-sm text-gray-400">
+                            ${new Date(review.created_at).toLocaleDateString()}
+                        </div>
+                    </div>
+                    
+                    ${review.title ? `<h4 class="font-medium text-lg mb-2">${review.title}</h4>` : ''}
+                    
+                    <div class="review-content">
+                        ${review.content}
+                    </div>
+                    
+                    <div class="flex justify-between items-center mt-4">
+                        <div class="review-actions">
+                            <span class="review-action">
+                                <i class="fas fa-thumbs-up"></i>
+                                ${review.likes_count || 0}
+                            </span>
+                            <span class="review-action">
+                                <i class="fas fa-eye"></i>
+                                Views
+                            </span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="btn btn-secondary btn-sm" onclick="editReview('${review.id}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-secondary btn-sm text-red-400" onclick="deleteReview('${review.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        async function loadUserRatings() {
+            try {
+                // This would need to be implemented in the API
+                userRatings = [];
+                displayUserRatings();
+                calculateRatingStats();
+            } catch (error) {
+                console.error('Error loading user ratings:', error);
+            }
+        }
+        
+        function displayUserRatings() {
+            const container = document.getElementById('userRatingsList');
+            
+            if (userRatings.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 col-span-full">
+                        <i class="fas fa-chart-line text-4xl text-gray-500 mb-4"></i>
+                        <p class="text-gray-400">No ratings yet.</p>
+                        <p class="text-gray-500 mt-2">Start rating movies to see your statistics!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Display rated movies
+            container.innerHTML = userRatings.map(rating => `
+                <div class="movie-card">
+                    <img class="movie-poster" src="${CONFIG.getTmdbImageUrl(rating.movie_poster)}" alt="${rating.movie_title}">
+                    <div class="movie-info">
+                        <div class="movie-title">${rating.movie_title}</div>
+                        <div class="flex items-center justify-between">
+                            <div class="rating-container">
+                                ${'<i class="fas fa-star text-yellow-500"></i>'.repeat(Math.floor(rating.rating))}
+                            </div>
+                            <span class="text-sm">${rating.rating}/10</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function calculateRatingStats() {
+            if (userRatings.length === 0) return;
+            
+            const ratings = userRatings.map(r => r.rating);
+            const avgRating = ratings.reduce((a, b) => a + b, 0) / ratings.length;
+            const highestRating = Math.max(...ratings);
+            const lowestRating = Math.min(...ratings);
+            
+            document.getElementById('avgRating').textContent = avgRating.toFixed(1);
+            document.getElementById('highestRated').textContent = highestRating;
+            document.getElementById('lowestRated').textContent = lowestRating;
+            document.getElementById('totalRatings').textContent = userRatings.length;
+        }
+        
+        async function loadUserWatchlist() {
+            try {
+                const response = await API.getUserWatchlist(currentUser.id);
+                userWatchlist = response.data || [];
+                displayUserWatchlist();
+            } catch (error) {
+                console.error('Error loading user watchlist:', error);
+            }
+        }
+        
+        function displayUserWatchlist() {
+            const container = document.getElementById('userWatchlist');
+            
+            if (userWatchlist.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 col-span-full">
+                        <i class="fas fa-list text-4xl text-gray-500 mb-4"></i>
+                        <p class="text-gray-400">Your watchlist is empty.</p>
+                        <p class="text-gray-500 mt-2">Add movies you want to watch!</p>
+                        <a href="../index.html" class="btn btn-primary mt-4">Browse Movies</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = userWatchlist.map(item => `
+                <div class="movie-card relative">
+                    <img class="movie-poster" src="${CONFIG.getTmdbImageUrl(item.movie_poster)}" alt="${item.movie_title}">
+                    <div class="movie-info">
+                        <div class="movie-title">${item.movie_title}</div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="priority-badge priority-${item.priority}">${item.priority}</span>
+                            ${item.watched ? '<span class="text-green-400"><i class="fas fa-check mr-1"></i>Watched</span>' : '<span class="text-gray-400">Not watched</span>'}
+                        </div>
+                    </div>
+                    ${!item.watched ? `
+                        <button class="absolute top-2 right-2 bg-green-600 text-white p-2 rounded-full text-sm hover:bg-green-700" onclick="markAsWatched('${item.id}')">
+                            <i class="fas fa-check"></i>
+                        </button>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+        
+        function updateProfileStats() {
+            document.getElementById('reviewCount').textContent = userReviews.length;
+            document.getElementById('ratingCount').textContent = userRatings.length;
+            document.getElementById('watchlistCount').textContent = userWatchlist.length;
+        }
+        
+        function setupTabs() {
+            const tabButtons = document.querySelectorAll('.profile-tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabName = button.dataset.tab;
+                    
+                    // Update active states
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.add('hidden'));
+                    
+                    button.classList.add('active');
+                    document.getElementById(tabName + 'Tab').classList.remove('hidden');
+                });
+            });
+        }
+        
+        function setupEventListeners() {
+            // Edit profile button
+            document.getElementById('editProfileBtn').addEventListener('click', openEditModal);
+            document.getElementById('closeEditModal').addEventListener('click', closeEditModal);
+            document.getElementById('cancelQuickEdit').addEventListener('click', closeEditModal);
+            
+            // Form submissions
+            document.getElementById('profileForm').addEventListener('submit', saveProfile);
+            document.getElementById('quickProfileForm').addEventListener('submit', saveQuickProfile);
+            document.getElementById('passwordForm').addEventListener('submit', changePassword);
+        }
+        
+        function openEditModal() {
+            // Populate quick edit form
+            document.getElementById('quickFirstName').value = document.getElementById('editFirstName').value;
+            document.getElementById('quickLastName').value = document.getElementById('editLastName').value;
+            document.getElementById('quickBio').value = document.getElementById('editBio').value;
+            
+            document.getElementById('editProfileModal').classList.remove('hidden');
+        }
+        
+        function closeEditModal() {
+            document.getElementById('editProfileModal').classList.add('hidden');
+        }
+        
+        async function saveProfile(e) {
+            e.preventDefault();
+            
+            const profileData = {
+                first_name: document.getElementById('editFirstName').value,
+                last_name: document.getElementById('editLastName').value,
+                bio: document.getElementById('editBio').value,
+                // Add other fields as needed
+            };
+            
+            try {
+                await AUTH.updateProfile(profileData);
+                await loadProfileData();
+                showSuccess('Profile updated successfully!');
+            } catch (error) {
+                showError('Failed to update profile');
+            }
+        }
+        
+        async function saveQuickProfile(e) {
+            e.preventDefault();
+            
+            const profileData = {
+                first_name: document.getElementById('quickFirstName').value,
+                last_name: document.getElementById('quickLastName').value,
+                bio: document.getElementById('quickBio').value,
+            };
+            
+            try {
+                await AUTH.updateProfile(profileData);
+                await loadProfileData();
+                closeEditModal();
+                showSuccess('Profile updated successfully!');
+            } catch (error) {
+                showError('Failed to update profile');
+            }
+        }
+        
+        async function changePassword(e) {
+            e.preventDefault();
+            
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmNewPassword').value;
+            
+            if (newPassword !== confirmPassword) {
+                showError('New passwords do not match');
+                return;
+            }
+            
+            try {
+                await AUTH.changePassword(currentPassword, newPassword);
+                document.getElementById('passwordForm').reset();
+                showSuccess('Password changed successfully!');
+            } catch (error) {
+                showError('Failed to change password');
+            }
+        }
+        
+        async function markAsWatched(itemId) {
+            try {
+                await API.markAsWatched(currentUser.id, itemId);
+                await loadUserWatchlist();
+                showSuccess('Marked as watched!');
+            } catch (error) {
+                showError('Failed to update watchlist');
+            }
+        }
+        
+        function showSuccess(message) {
+            if (window.UI && window.UI.showAlert) {
+                window.UI.showAlert(message, 'success');
+            } else {
+                alert(message);
+            }
+        }
+        
+        function showError(message) {
+            if (window.UI && window.UI.showAlert) {
+                window.UI.showAlert(message, 'error');
+            } else {
+                alert(message);
+            }
+        }
+    </script>
+
+    <style>
+        .profile-tab {
+            padding: 12px 24px;
+            margin: 0 4px;
+            border-bottom: 2px solid transparent;
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .profile-tab:hover {
+            color: #ef4444;
+        }
+        
+        .profile-tab.active {
+            color: #ef4444;
+            border-bottom-color: #ef4444;
+        }
+        
+        .priority-badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .priority-high {
+            background: #dc2626;
+            color: white;
+        }
+        
+        .priority-medium {
+            background: #f59e0b;
+            color: white;
+        }
+        
+        .priority-low {
+            background: #059669;
+            color: white;
+        }
+        
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+        }
+    </style>
+</body>
+</html>

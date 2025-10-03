@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Details - CineHub</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white">
+    <!-- Navigation -->
+    <nav class="bg-black bg-opacity-90 backdrop-blur-md fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="../index.html" class="text-2xl font-bold text-red-500">
+                        <i class="fas fa-film mr-2"></i>CineHub
+                    </a>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="../index.html" class="hover:text-red-400 transition-colors">Home</a>
+                    <a href="watchlist.html" class="hover:text-red-400 transition-colors">My List</a>
+                    
+                    <!-- User Menu -->
+                    <div id="userMenu" class="relative">
+                        <button id="userMenuButton" class="flex items-center space-x-2 hover:text-red-400 transition-colors">
+                            <i class="fas fa-user-circle text-xl"></i>
+                            <span id="username">Guest</span>
+                        </button>
+                        <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg border border-gray-600">
+                            <a href="profile.html" class="block px-4 py-2 hover:bg-gray-700 rounded-t-lg">Profile</a>
+                            <a href="login.html" id="loginLink" class="block px-4 py-2 hover:bg-gray-700">Login</a>
+                            <a href="#" id="logoutLink" class="hidden block px-4 py-2 hover:bg-gray-700 rounded-b-lg text-red-400">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Movie Hero Section -->
+    <section id="movieHero" class="relative pt-16">
+        <!-- Background will be set dynamically -->
+        <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/80 to-transparent"></div>
+        
+        <div class="relative z-10 max-w-7xl mx-auto px-4 py-12">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <!-- Movie Poster -->
+                <div class="lg:col-span-3">
+                    <img id="moviePoster" class="w-full max-w-sm mx-auto lg:mx-0 rounded-xl shadow-2xl" alt="Movie Poster">
+                </div>
+                
+                <!-- Movie Info -->
+                <div class="lg:col-span-9 space-y-6">
+                    <div>
+                        <h1 id="movieTitle" class="text-4xl md:text-6xl font-bold mb-4"></h1>
+                        <p id="movieTagline" class="text-xl text-gray-300 mb-4 italic"></p>
+                        
+                        <!-- Movie Meta Info -->
+                        <div id="movieMeta" class="flex flex-wrap gap-4 mb-6">
+                            <!-- Will be populated dynamically -->
+                        </div>
+                        
+                        <!-- Rating and Actions -->
+                        <div class="flex flex-col sm:flex-row gap-4 mb-6">
+                            <!-- TMDB Rating -->
+                            <div class="flex items-center bg-gray-800 px-4 py-2 rounded-lg">
+                                <i class="fas fa-star text-yellow-500 mr-2"></i>
+                                <span id="tmdbRating" class="font-semibold"></span>
+                                <span class="text-gray-400 ml-1">/ 10</span>
+                                <span id="voteCount" class="text-sm text-gray-500 ml-2"></span>
+                            </div>
+                            
+                            <!-- User Rating -->
+                            <div id="userRatingContainer" class="flex items-center bg-gray-800 px-4 py-2 rounded-lg">
+                                <span class="mr-2">Your Rating:</span>
+                                <div id="userRating" class="flex">
+                                    <!-- Star rating will be populated here -->
+                                </div>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="flex gap-2">
+                                <button id="watchlistBtn" class="btn btn-secondary">
+                                    <i class="fas fa-plus mr-2"></i>Watchlist
+                                </button>
+                                <button id="reviewBtn" class="btn btn-primary">
+                                    <i class="fas fa-pen mr-2"></i>Write Review
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Overview -->
+                        <div>
+                            <h3 class="text-xl font-semibold mb-3">Overview</h3>
+                            <p id="movieOverview" class="text-gray-300 leading-relaxed text-lg"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Movie Details Section -->
+    <section class="py-12 bg-black">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Cast & Crew -->
+                <div class="lg:col-span-2">
+                    <h2 class="text-2xl font-bold mb-6">Cast</h2>
+                    <div id="movieCast" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <!-- Cast will be loaded here -->
+                    </div>
+                </div>
+                
+                <!-- Movie Info Sidebar -->
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-lg font-semibold mb-3">Details</h3>
+                        <div id="movieDetails" class="space-y-2 text-sm">
+                            <!-- Details will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold mb-3">Genres</h3>
+                        <div id="movieGenres" class="flex flex-wrap gap-2">
+                            <!-- Genres will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section class="py-12 bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold">Reviews</h2>
+                <button id="writeReviewBtn" class="btn btn-primary">
+                    <i class="fas fa-pen mr-2"></i>Write a Review
+                </button>
+            </div>
+            
+            <!-- Review Stats -->
+            <div id="reviewStats" class="bg-gray-800 p-6 rounded-xl mb-8">
+                <!-- Review statistics will be shown here -->
+            </div>
+            
+            <!-- Reviews List -->
+            <div id="reviewsList" class="space-y-6">
+                <!-- Reviews will be loaded here -->
+            </div>
+            
+            <!-- Load More Reviews -->
+            <div class="text-center mt-8">
+                <button id="loadMoreReviews" class="btn btn-secondary hidden">
+                    Load More Reviews
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Similar Movies Section -->
+    <section class="py-12 bg-black">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-8">Similar Movies</h2>
+            <div id="similarMovies" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                <!-- Similar movies will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Review Modal -->
+    <div id="reviewModal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-gray-800 rounded-lg w-full max-w-2xl max-h-screen overflow-y-auto">
+                <div class="p-6 border-b border-gray-600 flex justify-between items-center">
+                    <h3 class="text-xl font-semibold">Write a Review</h3>
+                    <button id="closeReviewModal" class="text-gray-400 hover:text-white text-xl">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="p-6">
+                    <form id="reviewForm">
+                        <div class="mb-4">
+                            <label class="form-label">Your Rating</label>
+                            <div id="reviewRating" class="flex gap-1 mb-2">
+                                <!-- Rating stars will be here -->
+                            </div>
+                            <p class="text-sm text-gray-400">Click to rate this movie</p>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="reviewTitle" class="form-label">Review Title</label>
+                            <input id="reviewTitle" type="text" class="form-input" placeholder="Give your review a title" maxlength="100">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="reviewContent" class="form-label">Your Review</label>
+                            <textarea id="reviewContent" class="form-input h-32" placeholder="Share your thoughts about this movie..." maxlength="2000"></textarea>
+                            <p class="text-xs text-gray-500 mt-1"><span id="reviewCharCount">0</span>/2000 characters</p>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label class="flex items-center">
+                                <input id="spoilerWarning" type="checkbox" class="mr-2">
+                                <span class="text-sm">This review contains spoilers</span>
+                            </label>
+                        </div>
+                        
+                        <div class="flex gap-4">
+                            <button type="submit" class="btn btn-primary flex-1">
+                                <i class="fas fa-save mr-2"></i>Save Review
+                            </button>
+                            <button type="button" id="cancelReview" class="btn btn-secondary">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-gray-800 p-6 rounded-lg">
+            <i class="fas fa-spinner fa-spin text-3xl text-red-500"></i>
+            <p class="mt-2">Loading movie details...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/ui.js"></script>
+    
+    <script>
+        // Movie details page functionality
+        let currentMovie = null;
+        let currentUserRating = 0;
+        let reviewsPage = 1;
+        
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Get movie ID from URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const movieId = urlParams.get('id');
+            
+            if (!movieId) {
+                showError('Movie not found');
+                window.location.href = '../index.html';
+                return;
+            }
+            
+            try {
+                await loadMovieDetails(movieId);
+                await loadMovieReviews(movieId);
+                setupEventListeners();
+            } catch (error) {
+                console.error('Error loading movie details:', error);
+                showError('Failed to load movie details');
+            } finally {
+                document.getElementById('loadingSpinner').classList.add('hidden');
+            }
+        });
+        
+        async function loadMovieDetails(movieId) {
+            try {
+                // Load movie data from TMDB
+                const movieData = await API.getMovieDetails(movieId);
+                currentMovie = movieData;
+                
+                // Update page content
+                updateMovieDisplay(movieData);
+                
+                // Load user-specific data if logged in
+                if (AUTH.isLoggedIn()) {
+                    await loadUserData(movieId);
+                }
+                
+                // Update page title
+                document.title = `${movieData.title} - CineHub`;
+                
+            } catch (error) {
+                console.error('Error loading movie details:', error);
+                throw error;
+            }
+        }
+        
+        function updateMovieDisplay(movie) {
+            // Hero section
+            const heroSection = document.getElementById('movieHero');
+            if (movie.backdrop_path) {
+                heroSection.style.backgroundImage = `url(${CONFIG.getTmdbImageUrl(movie.backdrop_path, 'original')})`;
+                heroSection.style.backgroundSize = 'cover';
+                heroSection.style.backgroundPosition = 'center';
+            }
+            
+            // Basic info
+            document.getElementById('movieTitle').textContent = movie.title;
+            document.getElementById('movieTagline').textContent = movie.tagline || '';
+            document.getElementById('movieOverview').textContent = movie.overview;
+            document.getElementById('moviePoster').src = CONFIG.getTmdbImageUrl(movie.poster_path);
+            document.getElementById('moviePoster').alt = movie.title;
+            
+            // Rating
+            document.getElementById('tmdbRating').textContent = movie.vote_average.toFixed(1);
+            document.getElementById('voteCount').textContent = `(${movie.vote_count.toLocaleString()} votes)`;
+            
+            // Meta info
+            const metaContainer = document.getElementById('movieMeta');
+            metaContainer.innerHTML = `
+                <span class="meta-item">${new Date(movie.release_date).getFullYear()}</span>
+                <span class="meta-item">${movie.runtime} min</span>
+                <span class="meta-item">${movie.original_language.toUpperCase()}</span>
+                ${movie.adult ? '<span class="meta-item bg-red-600">18+</span>' : ''}
+            `;
+            
+            // Genres
+            const genresContainer = document.getElementById('movieGenres');
+            genresContainer.innerHTML = movie.genres.map(genre => 
+                `<span class="genre-pill text-sm">${genre.name}</span>`
+            ).join('');
+            
+            // Cast
+            if (movie.credits && movie.credits.cast) {
+                const castContainer = document.getElementById('movieCast');
+                castContainer.innerHTML = movie.credits.cast.slice(0, 12).map(actor => `
+                    <div class="cast-member text-center">
+                        <img class="cast-photo mx-auto" 
+                             src="${CONFIG.getTmdbImageUrl(actor.profile_path, CONFIG.TMDB_PROFILE_SIZE)}" 
+                             alt="${actor.name}"
+                             onerror="this.src='${CONFIG.PLACEHOLDERS.PROFILE_AVATAR}'">
+                        <div class="cast-name">${actor.name}</div>
+                        <div class="cast-character">${actor.character}</div>
+                    </div>
+                `).join('');
+            }
+            
+            // Details sidebar
+            const detailsContainer = document.getElementById('movieDetails');
+            detailsContainer.innerHTML = `
+                <div><strong>Status:</strong> ${movie.status}</div>
+                <div><strong>Release Date:</strong> ${new Date(movie.release_date).toLocaleDateString()}</div>
+                <div><strong>Runtime:</strong> ${movie.runtime} minutes</div>
+                <div><strong>Budget:</strong> ${movie.budget ? '$' + movie.budget.toLocaleString() : 'N/A'}</div>
+                <div><strong>Revenue:</strong> ${movie.revenue ? '$' + movie.revenue.toLocaleString() : 'N/A'}</div>
+                <div><strong>Language:</strong> ${movie.original_language.toUpperCase()}</div>
+            `;
+            
+            // Similar movies
+            if (movie.similar && movie.similar.results) {
+                const similarContainer = document.getElementById('similarMovies');
+                similarContainer.innerHTML = movie.similar.results.slice(0, 6).map(similarMovie => `
+                    <div class="movie-card cursor-pointer" onclick="window.location.href='movie-details.html?id=${similarMovie.id}'">
+                        <img class="movie-poster" src="${CONFIG.getTmdbImageUrl(similarMovie.poster_path)}" alt="${similarMovie.title}">
+                        <div class="movie-info">
+                            <div class="movie-title">${similarMovie.title}</div>
+                            <div class="movie-year">${new Date(similarMovie.release_date).getFullYear()}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        async function loadUserData(movieId) {
+            const user = AUTH.getCurrentUser();
+            if (!user) return;
+            
+            try {
+                // Load user rating
+                const ratingResponse = await API.getUserMovieRating(user.id, movieId);
+                if (ratingResponse.data && ratingResponse.data.length > 0) {
+                    currentUserRating = ratingResponse.data[0].rating;
+                    updateUserRating(currentUserRating);
+                }
+                
+                // Check watchlist status
+                const inWatchlist = await API.isInWatchlist(user.id, movieId);
+                updateWatchlistButton(inWatchlist);
+                
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        }
+        
+        function updateUserRating(rating) {
+            const container = document.getElementById('userRating');
+            container.innerHTML = '';
+            
+            for (let i = 1; i <= 10; i++) {
+                const star = document.createElement('i');
+                star.className = `fas fa-star cursor-pointer ${i <= rating ? 'text-yellow-500' : 'text-gray-500'}`;
+                star.dataset.rating = i;
+                star.addEventListener('click', () => rateMovie(i));
+                container.appendChild(star);
+            }
+        }
+        
+        async function rateMovie(rating) {
+            if (!AUTH.isLoggedIn()) {
+                showError('Please log in to rate movies');
+                return;
+            }
+            
+            try {
+                const user = AUTH.getCurrentUser();
+                await API.createOrUpdateRating({
+                    user_id: user.id,
+                    movie_id: currentMovie.id,
+                    rating: rating
+                });
+                
+                currentUserRating = rating;
+                updateUserRating(rating);
+                showSuccess('Rating saved successfully!');
+                
+            } catch (error) {
+                console.error('Error saving rating:', error);
+                showError('Failed to save rating');
+            }
+        }
+        
+        function updateWatchlistButton(inWatchlist) {
+            const button = document.getElementById('watchlistBtn');
+            if (inWatchlist) {
+                button.innerHTML = '<i class="fas fa-check mr-2"></i>In Watchlist';
+                button.classList.add('bg-green-600');
+            } else {
+                button.innerHTML = '<i class="fas fa-plus mr-2"></i>Add to Watchlist';
+                button.classList.remove('bg-green-600');
+            }
+        }
+        
+        async function toggleWatchlist() {
+            if (!AUTH.isLoggedIn()) {
+                showError('Please log in to use watchlist');
+                return;
+            }
+            
+            try {
+                const user = AUTH.getCurrentUser();
+                const inWatchlist = await API.isInWatchlist(user.id, currentMovie.id);
+                
+                if (inWatchlist) {
+                    await API.removeFromWatchlist(user.id, currentMovie.id);
+                    updateWatchlistButton(false);
+                    showSuccess('Removed from watchlist');
+                } else {
+                    await API.addToWatchlist({
+                        user_id: user.id,
+                        movie_id: currentMovie.id,
+                        added_at: new Date().toISOString(),
+                        priority: 'medium',
+                        watched: false
+                    });
+                    updateWatchlistButton(true);
+                    showSuccess('Added to watchlist');
+                }
+                
+            } catch (error) {
+                console.error('Error toggling watchlist:', error);
+                showError('Failed to update watchlist');
+            }
+        }
+        
+        async function loadMovieReviews(movieId, page = 1) {
+            try {
+                const reviews = await API.getReviews(movieId, page);
+                displayReviews(reviews.data || [], page === 1);
+                
+                // Show load more button if there are more reviews
+                const loadMoreBtn = document.getElementById('loadMoreReviews');
+                if (reviews.data && reviews.data.length === CONFIG.REVIEWS_PER_PAGE) {
+                    loadMoreBtn.classList.remove('hidden');
+                } else {
+                    loadMoreBtn.classList.add('hidden');
+                }
+                
+            } catch (error) {
+                console.error('Error loading reviews:', error);
+            }
+        }
+        
+        function displayReviews(reviews, clearExisting = true) {
+            const container = document.getElementById('reviewsList');
+            
+            if (clearExisting) {
+                container.innerHTML = '';
+            }
+            
+            if (reviews.length === 0 && clearExisting) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <i class="fas fa-comments text-4xl text-gray-500 mb-4"></i>
+                        <p class="text-gray-400">No reviews yet. Be the first to review this movie!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            reviews.forEach(review => {
+                const reviewElement = createReviewElement(review);
+                container.appendChild(reviewElement);
+            });
+        }
+        
+        function createReviewElement(review) {
+            const reviewDiv = document.createElement('div');
+            reviewDiv.className = 'review-card';
+            
+            reviewDiv.innerHTML = `
+                <div class="review-header">
+                    <div class="review-author">
+                        <div class="author-avatar">${review.user_name ? review.user_name.charAt(0).toUpperCase() : 'U'}</div>
+                        <div class="author-info">
+                            <h4>${review.user_name || 'Anonymous'}</h4>
+                            <div class="review-date">${new Date(review.created_at).toLocaleDateString()}</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="rating-container">
+                            ${'<i class="fas fa-star text-yellow-500"></i>'.repeat(Math.floor(review.rating))}
+                            <span class="ml-1">${review.rating}/10</span>
+                        </div>
+                    </div>
+                </div>
+                
+                ${review.title ? `<h3 class="font-semibold text-lg mb-2">${review.title}</h3>` : ''}
+                
+                ${review.spoiler_warning ? '<div class="bg-yellow-600 text-black px-2 py-1 rounded text-sm mb-2 inline-block"><i class="fas fa-exclamation-triangle mr-1"></i>Spoiler Warning</div>' : ''}
+                
+                <div class="review-content">
+                    ${review.content}
+                </div>
+                
+                <div class="review-actions">
+                    <button class="review-action" onclick="likeReview('${review.id}', true)">
+                        <i class="fas fa-thumbs-up"></i>
+                        <span>${review.likes_count || 0}</span>
+                    </button>
+                    <button class="review-action" onclick="likeReview('${review.id}', false)">
+                        <i class="fas fa-thumbs-down"></i>
+                        <span>${review.dislikes_count || 0}</span>
+                    </button>
+                </div>
+            `;
+            
+            return reviewDiv;
+        }
+        
+        async function likeReview(reviewId, isLike) {
+            if (!AUTH.isLoggedIn()) {
+                showError('Please log in to like reviews');
+                return;
+            }
+            
+            try {
+                const user = AUTH.getCurrentUser();
+                await API.likeReview(user.id, reviewId, isLike);
+                
+                // Reload reviews to show updated counts
+                await loadMovieReviews(currentMovie.id);
+                
+            } catch (error) {
+                console.error('Error liking review:', error);
+                showError('Failed to like review');
+            }
+        }
+        
+        function setupEventListeners() {
+            // Watchlist button
+            document.getElementById('watchlistBtn').addEventListener('click', toggleWatchlist);
+            
+            // Review buttons
+            document.getElementById('reviewBtn').addEventListener('click', openReviewModal);
+            document.getElementById('writeReviewBtn').addEventListener('click', openReviewModal);
+            document.getElementById('closeReviewModal').addEventListener('click', closeReviewModal);
+            document.getElementById('cancelReview').addEventListener('click', closeReviewModal);
+            
+            // Review form
+            document.getElementById('reviewForm').addEventListener('submit', submitReview);
+            
+            // Load more reviews
+            document.getElementById('loadMoreReviews').addEventListener('click', () => {
+                reviewsPage++;
+                loadMovieReviews(currentMovie.id, reviewsPage);
+            });
+            
+            // Review character count
+            document.getElementById('reviewContent').addEventListener('input', function() {
+                document.getElementById('reviewCharCount').textContent = this.value.length;
+            });
+            
+            // Setup review rating stars
+            setupReviewRating();
+        }
+        
+        function setupReviewRating() {
+            const container = document.getElementById('reviewRating');
+            container.innerHTML = '';
+            
+            for (let i = 1; i <= 10; i++) {
+                const star = document.createElement('i');
+                star.className = 'fas fa-star cursor-pointer text-2xl text-gray-500 hover:text-yellow-500';
+                star.dataset.rating = i;
+                star.addEventListener('click', function() {
+                    const rating = parseInt(this.dataset.rating);
+                    updateReviewRating(rating);
+                });
+                container.appendChild(star);
+            }
+        }
+        
+        function updateReviewRating(rating) {
+            const stars = document.querySelectorAll('#reviewRating i');
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.add('text-yellow-500');
+                    star.classList.remove('text-gray-500');
+                } else {
+                    star.classList.add('text-gray-500');
+                    star.classList.remove('text-yellow-500');
+                }
+            });
+        }
+        
+        function openReviewModal() {
+            if (!AUTH.isLoggedIn()) {
+                showError('Please log in to write reviews');
+                return;
+            }
+            
+            document.getElementById('reviewModal').classList.remove('hidden');
+        }
+        
+        function closeReviewModal() {
+            document.getElementById('reviewModal').classList.add('hidden');
+            document.getElementById('reviewForm').reset();
+            setupReviewRating();
+        }
+        
+        async function submitReview(e) {
+            e.preventDefault();
+            
+            const rating = document.querySelectorAll('#reviewRating i.text-yellow-500').length;
+            if (rating === 0) {
+                showError('Please select a rating');
+                return;
+            }
+            
+            const title = document.getElementById('reviewTitle').value;
+            const content = document.getElementById('reviewContent').value;
+            const hasSpoilers = document.getElementById('spoilerWarning').checked;
+            
+            if (content.length < 10) {
+                showError('Review must be at least 10 characters long');
+                return;
+            }
+            
+            try {
+                const user = AUTH.getCurrentUser();
+                await API.createReview({
+                    user_id: user.id,
+                    movie_id: currentMovie.id,
+                    title: title,
+                    content: content,
+                    rating: rating,
+                    spoiler_warning: hasSpoilers,
+                    likes_count: 0,
+                    dislikes_count: 0,
+                    created_at: new Date().toISOString(),
+                    is_featured: false,
+                    helpful_count: 0
+                });
+                
+                closeReviewModal();
+                showSuccess('Review saved successfully!');
+                
+                // Reload reviews
+                reviewsPage = 1;
+                await loadMovieReviews(currentMovie.id);
+                
+            } catch (error) {
+                console.error('Error saving review:', error);
+                showError('Failed to save review');
+            }
+        }
+        
+        function showSuccess(message) {
+            if (window.UI && window.UI.showAlert) {
+                window.UI.showAlert(message, 'success');
+            } else {
+                alert(message);
+            }
+        }
+        
+        function showError(message) {
+            if (window.UI && window.UI.showAlert) {
+                window.UI.showAlert(message, 'error');
+            } else {
+                alert(message);
+            }
+        }
+    </script>
+</body>
+</html>

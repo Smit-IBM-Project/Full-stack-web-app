@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - CineHub</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-black bg-opacity-90 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="../index.html" class="text-2xl font-bold text-red-500">
+                        <i class="fas fa-film mr-2"></i>CineHub
+                    </a>
+                </div>
+                
+                <div class="flex items-center space-x-6">
+                    <a href="../index.html" class="hover:text-red-400 transition-colors">Home</a>
+                    <a href="register.html" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg font-semibold transition-colors">
+                        Sign Up
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Form -->
+    <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8">
+            <div class="text-center">
+                <i class="fas fa-user-circle text-6xl text-red-500 mb-4"></i>
+                <h2 class="text-3xl font-bold">Welcome Back</h2>
+                <p class="text-gray-400 mt-2">Sign in to your CineHub account</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="mt-8 space-y-6 bg-gray-800 p-8 rounded-xl border border-gray-600">
+                <div id="loginAlerts"></div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label for="email" class="form-label">
+                            <i class="fas fa-envelope mr-2"></i>Email Address
+                        </label>
+                        <input id="email" name="email" type="email" required 
+                               class="form-input" placeholder="Enter your email">
+                    </div>
+                    
+                    <div>
+                        <label for="password" class="form-label">
+                            <i class="fas fa-lock mr-2"></i>Password
+                        </label>
+                        <div class="relative">
+                            <input id="password" name="password" type="password" required 
+                                   class="form-input pr-12" placeholder="Enter your password">
+                            <button type="button" id="togglePassword" 
+                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input id="remember" name="remember" type="checkbox" 
+                               class="h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500">
+                        <label for="remember" class="ml-2 text-sm text-gray-300">
+                            Remember me
+                        </label>
+                    </div>
+
+                    <div class="text-sm">
+                        <a href="#" class="text-red-400 hover:text-red-300">
+                            Forgot password?
+                        </a>
+                    </div>
+                </div>
+
+                <button type="submit" id="loginButton" 
+                        class="btn btn-primary w-full">
+                    <i class="fas fa-sign-in-alt mr-2"></i>
+                    Sign In
+                </button>
+
+                <div class="text-center">
+                    <p class="text-gray-400">
+                        Don't have an account? 
+                        <a href="register.html" class="text-red-400 hover:text-red-300 font-semibold">
+                            Sign up here
+                        </a>
+                    </p>
+                </div>
+            </form>
+
+            <!-- Demo Users -->
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-600 mt-6">
+                <h3 class="text-lg font-semibold mb-4 text-center">Demo Account</h3>
+                <p class="text-gray-400 text-sm text-center mb-4">
+                    Try the app with a demo account:
+                </p>
+                <button id="demoLogin" class="btn btn-secondary w-full">
+                    <i class="fas fa-user mr-2"></i>
+                    Login with Demo Account
+                </button>
+            </div>
+
+            <!-- Social Login (Optional) -->
+            <div class="bg-gray-800 p-6 rounded-xl border border-gray-600">
+                <div class="text-center mb-4">
+                    <span class="text-gray-400 text-sm">Or continue with</span>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <button class="btn btn-secondary flex items-center justify-center">
+                        <i class="fab fa-google mr-2"></i>
+                        Google
+                    </button>
+                    <button class="btn btn-secondary flex items-center justify-center">
+                        <i class="fab fa-facebook mr-2"></i>
+                        Facebook
+                    </button>
+                </div>
+                
+                <p class="text-xs text-gray-500 text-center mt-3">
+                    Note: Social login is not implemented in this demo
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div class="bg-gray-800 p-6 rounded-lg">
+            <i class="fas fa-spinner fa-spin text-3xl text-red-500"></i>
+            <p class="mt-2">Signing you in...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/config.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/ui.js"></script>
+    
+    <script>
+        // Login page specific functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const togglePassword = document.getElementById('togglePassword');
+            const loginButton = document.getElementById('loginButton');
+            const demoLoginButton = document.getElementById('demoLogin');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            
+            // Password visibility toggle
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                const icon = this.querySelector('i');
+                icon.classList.toggle('fa-eye');
+                icon.classList.toggle('fa-eye-slash');
+            });
+            
+            // Form submission
+            loginForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(loginForm);
+                const credentials = {
+                    email: formData.get('email'),
+                    password: formData.get('password')
+                };
+                
+                // Show loading
+                loadingSpinner.classList.remove('hidden');
+                loginButton.disabled = true;
+                loginButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Signing in...';
+                
+                try {
+                    const result = await AUTH.login(credentials);
+                    
+                    if (result.success) {
+                        // Check for redirect URL
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const redirectUrl = urlParams.get('redirect');
+                        
+                        if (redirectUrl) {
+                            window.location.href = decodeURIComponent(redirectUrl);
+                        } else {
+                            window.location.href = '../index.html';
+                        }
+                    } else {
+                        showAlert(result.error || 'Login failed', 'error');
+                    }
+                } catch (error) {
+                    showAlert('An error occurred during login', 'error');
+                } finally {
+                    loadingSpinner.classList.add('hidden');
+                    loginButton.disabled = false;
+                    loginButton.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Sign In';
+                }
+            });
+            
+            // Demo login
+            demoLoginButton.addEventListener('click', async function() {
+                emailInput.value = 'demo@cinehub.com';
+                passwordInput.value = 'password';
+                
+                // Trigger form submission
+                loginForm.dispatchEvent(new Event('submit'));
+            });
+            
+            // Show alert function
+            function showAlert(message, type = 'info') {
+                const alertsContainer = document.getElementById('loginAlerts');
+                const alertClass = type === 'error' ? 'alert-error' : 
+                                  type === 'success' ? 'alert-success' : 'alert-warning';
+                
+                const alert = document.createElement('div');
+                alert.className = `alert ${alertClass}`;
+                alert.innerHTML = `
+                    <i class="fas fa-${type === 'error' ? 'exclamation-circle' : 
+                                    type === 'success' ? 'check-circle' : 'info-circle'} mr-2"></i>
+                    ${message}
+                `;
+                
+                alertsContainer.appendChild(alert);
+                
+                setTimeout(() => {
+                    alert.remove();
+                }, 5000);
+            }
+            
+            // Check if user is already logged in
+            if (AUTH.isLoggedIn()) {
+                window.location.href = '../index.html';
+            }
+            
+            // Auto-focus email input
+            emailInput.focus();
+        });
+    </script>
+</body>
+</html>

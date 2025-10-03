@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TMDB API Test - CineHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6">🎬 TMDB API Test</h1>
+        
+        <div class="bg-gray-800 p-6 rounded-lg mb-6">
+            <h2 class="text-xl font-semibold mb-4">API Status</h2>
+            <div id="apiStatus" class="text-gray-400">Testing API connection...</div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Trending Movies -->
+            <div class="bg-gray-800 p-6 rounded-lg">
+                <h3 class="text-lg font-semibold mb-4">🔥 Trending Movies</h3>
+                <div id="trendingMovies">Loading...</div>
+            </div>
+
+            <!-- Search Test -->
+            <div class="bg-gray-800 p-6 rounded-lg">
+                <h3 class="text-lg font-semibold mb-4">🔍 Search Test</h3>
+                <input type="text" id="searchInput" placeholder="Search for a movie..." 
+                       class="w-full p-2 bg-gray-700 rounded mb-4 text-white">
+                <div id="searchResults">Enter a movie name to search...</div>
+            </div>
+        </div>
+
+        <div class="mt-6 text-center">
+            <button onclick="runAllTests()" class="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-lg font-semibold">
+                🧪 Run All Tests
+            </button>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script>
+        const config = new Config();
+        let testResults = [];
+
+        async function testApiConnection() {
+            const statusDiv = document.getElementById('apiStatus');
+            
+            try {
+                // Test basic API connectivity with a simple request
+                const url = config.getTmdbUrl('/configuration');
+                const response = await fetch(url);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    statusDiv.innerHTML = `
+                        <div class="text-green-400">
+                            ✅ API Connection: SUCCESS<br>
+                            🔑 API Key: ${config.TMDB_API_KEY.substring(0, 8)}...<br>
+                            🌍 Base URL: ${config.TMDB_BASE_URL}<br>
+                            📊 Configuration loaded successfully
+                        </div>
+                    `;
+                    testResults.push({ test: 'API Connection', status: 'PASS' });
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="text-red-400">
+                        ❌ API Connection: FAILED<br>
+                        Error: ${error.message}<br>
+                        🔑 API Key: ${config.TMDB_API_KEY ? 'Present' : 'Missing'}
+                    </div>
+                `;
+                testResults.push({ test: 'API Connection', status: 'FAIL', error: error.message });
+            }
+        }
+
+        async function testTrendingMovies() {
+            const container = document.getElementById('trendingMovies');
+            
+            try {
+                const url = config.getTmdbUrl('/trending/movie/week');
+                const response = await fetch(url);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const movies = data.results.slice(0, 3); // Show first 3 movies
+                    
+                    container.innerHTML = movies.map(movie => `
+                        <div class="mb-3 p-3 bg-gray-700 rounded">
+                            <div class="font-medium">${movie.title}</div>
+                            <div class="text-sm text-gray-400">
+                                ⭐ ${movie.vote_average.toFixed(1)} • 
+                                ${movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A'}
+                            </div>
+                        </div>
+                    `).join('');
+                    
+                    testResults.push({ test: 'Trending Movies', status: 'PASS', count: movies.length });
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                container.innerHTML = `<div class="text-red-400">❌ Failed to load: ${error.message}</div>`;
+                testResults.push({ test: 'Trending Movies', status: 'FAIL', error: error.message });
+            }
+        }
+
+        async function testMovieSearch(query) {
+            const container = document.getElementById('searchResults');
+            
+            if (!query || query.length < 2) {
+                container.innerHTML = 'Enter at least 2 characters to search...';
+                return;
+            }
+            
+            container.innerHTML = 'Searching...';
+            
+            try {
+                const url = config.getTmdbUrl('/search/movie', { query });
+                const response = await fetch(url);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const movies = data.results.slice(0, 5); // Show first 5 results
+                    
+                    if (movies.length === 0) {
+                        container.innerHTML = '<div class="text-gray-400">No results found</div>';
+                    } else {
+                        container.innerHTML = movies.map(movie => `
+                            <div class="mb-2 p-2 bg-gray-700 rounded text-sm">
+                                <div class="font-medium">${movie.title}</div>
+                                <div class="text-gray-400">
+                                    ${movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A'} • 
+                                    ⭐ ${movie.vote_average.toFixed(1)}
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+                    
+                    testResults.push({ test: 'Movie Search', status: 'PASS', query, results: movies.length });
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                container.innerHTML = `<div class="text-red-400">❌ Search failed: ${error.message}</div>`;
+                testResults.push({ test: 'Movie Search', status: 'FAIL', query, error: error.message });
+            }
+        }
+
+        async function runAllTests() {
+            console.log('🧪 Running TMDB API Tests...');
+            testResults = [];
+            
+            // Test 1: API Connection
+            await testApiConnection();
+            
+            // Test 2: Trending Movies
+            await testTrendingMovies();
+            
+            // Test 3: Movie Search
+            await testMovieSearch('avengers');
+            
+            // Show results summary
+            console.log('📊 Test Results Summary:', testResults);
+            
+            const passCount = testResults.filter(t => t.status === 'PASS').length;
+            const totalTests = testResults.length;
+            
+            alert(`🎯 Test Results: ${passCount}/${totalTests} tests passed\n\nCheck console for detailed results.`);
+        }
+
+        // Set up search input handler
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const query = e.target.value.trim();
+            if (query.length >= 2) {
+                clearTimeout(window.searchTimeout);
+                window.searchTimeout = setTimeout(() => testMovieSearch(query), 500);
+            }
+        });
+
+        // Initialize tests when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 Initializing TMDB API Tests...');
+            testApiConnection();
+            testTrendingMovies();
+        });
+    </script>
+</body>
+</html>
